@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objets trouvés</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <h1>Objets trouvé</h1>
+    <div id="form">
+        <div id="form-objets">
+            <label for="form-objets-input">Objet perdu</label>
+            <input type="text" id="form-objets-input">
+        </div>
+        <div id="form-gare">
+            <label for="form-gare-input">Gare</label>
+            <input type="text" id="form-gare-input">
+        </div>
+        <div id="form-date">
+            <label for="form-date-input">Date</label>
+            <input type="date" id="form-date-input">
+        </div>
+        <button onclick="searchObjects()">Rechercher</button>
+    </div>
+    <h2 id="nombre"></h2>
+    <div id="resultat">
+
+    </div>
+    <script>
+        function IsoToDate(date) {
+            date = new Date(date);
+            year = date.getFullYear();
+            month = date.getMonth() + 1;
+            day = date.getDate();
+
+            if (day < 10) {
+                day = '0' + day;
+            }
+            if (month < 10) {
+                month = '0' + month;
+            }
+            return day + '-' + month + '-' + year;
+        };
+        function currentDate() {
+            date = new Date();
+            year = date.getFullYear();
+            month = date.getMonth() + 1;
+            day = date.getDate();
+
+            if (day < 10) {
+                day = '0' + day;
+            }
+            if (month < 10) {
+                month = '0' + month;
+            }
+            return year + '-' + month + '-' + day;
+        }
+  
+        async function searchObjects() {
+            let query = document.getElementById("form-objets-input").value;
+            let search_date = document.getElementById("form-date-input").value;
+            let search_gare = document.getElementById("form-gare-input").value;
+            let query_gare = '&refine.gc_obo_gare_origine_r_name=';
+            if (!search_date) {
+                search_date = currentDate();
+            } else {
+                search_date;
+            }
+            if (!search_gare) {
+                query_gare = '';
+            } else {
+                query_gare = '&refine.gc_obo_gare_origine_r_name=' + search_gare;
+            }
+            fetch('https://data.sncf.com/api/records/1.0/search/?dataset=objets-trouves-restitution&q=' + query +
+                    '&sort=date&facet=date&rows=12&facet=gc_obo_date_heure_restitution_c&facet=gc_obo_gare_origine_r_name&facet=gc_obo_nature_c&facet=gc_obo_type_c&facet=gc_obo_nom_recordtype_sc_c' + query_gare + '&refine.date=' + search_date
+                )
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json);
+                    var data = json.records;
+                    console.log(data);
+                    document.getElementById("resultat").innerHTML = "";
+                    for (let index = 0; index < data.length; index++) {
+                        let details = data[index].fields;
+                        let resultat = document.getElementById("resultat");
+                        let nhits = json.nhits;
+                        nombre.innerHTML = 'Nombre de résultats : ' + nhits;
+                        let div = document.createElement('div');
+                        div.className = 'objets-trouves';
+                        div.innerHTML = `
+                    <div style="display:none">${data[index].datasetid}</div>
+                    <div class="date-trouve">${IsoToDate(details.date)}</div>
+                    <div class="lieu">${details.gc_obo_gare_origine_r_name}</div>
+                    <div class="nature">${details.gc_obo_nature_c}</div>
+                    <div class="type">${details.gc_obo_type_c}</div>
+                    <div class="nom">${details.gc_obo_nom_recordtype_sc_c}</div>
+                `
+                        resultat.appendChild(div);
+                    }
+                })
+        };
+    </script>
+</body>
+
+</html>
