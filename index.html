@@ -7,13 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Objets trouvés</title>
     <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Base de donnée des objets trouvés sur le réseau SNCF">
+    <link rel="icon" type="image/png" href="favicon.png">
     <style>
 
     </style>
 </head>
 
 <body>
-    <h1>Objets trouvé</h1>
+    <h1>Objets trouvé réseau SNCF</h1>
     <div id="form">
         <div id="form-objets">
             <label for="form-objets-input">Objet perdu</label>
@@ -26,6 +28,7 @@
         <div id="form-date">
             <label for="form-date-input">Date</label>
             <input type="date" id="form-date-input">
+            <span style="font-style: italic; font-size: smaller;">Si aucune date n'est indiqué, la date du jour sera utilisée.</span>
         </div>
         <button onclick="searchObjects()">Rechercher</button>
     </div>

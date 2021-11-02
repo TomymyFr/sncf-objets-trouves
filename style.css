@@ -4,11 +4,14 @@
 body {
     margin: 10px;
 }
+h1 {
+    margin: 10px 0;
+}
 #form > div {
     padding: 10px 0;
     display: flex;
     width: 20%;
-    justify-content: space-between;
+    flex-direction: column;
 }
 
 #resultat {
@@ -23,7 +26,7 @@ body {
     border-radius: 5px;
 }
 @media screen and (max-width: 800px) {
-    .objets-trouves {
+    .objets-trouves, #form > div  {
         width: 100%;
     }
 }
